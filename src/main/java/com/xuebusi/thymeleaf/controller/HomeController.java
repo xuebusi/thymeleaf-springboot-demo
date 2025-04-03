@@ -3,6 +3,7 @@ package com.xuebusi.thymeleaf.controller;
 import com.xuebusi.thymeleaf.dto.NavBarDto;
 import com.xuebusi.thymeleaf.model.NavItem;
 import com.xuebusi.thymeleaf.service.UserService;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,12 +13,8 @@ import java.util.List;
 
 @Controller
 public class HomeController {
-
-    private final UserService userService;
-
-    public HomeController(UserService userService) {
-        this.userService = userService;
-    }
+    @Resource
+    private UserService userService;
 
     @GetMapping("/")
     public String home(Model model, HttpServletRequest request) {

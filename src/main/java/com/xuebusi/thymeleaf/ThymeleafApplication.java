@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("com.xuebusi.thymeleaf.mapper")
-public class ThymeleafDemoApplication {
+public class ThymeleafApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ThymeleafDemoApplication.class, args);
+        SpringApplication.run(ThymeleafApplication.class, args);
     }
 }

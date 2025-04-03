@@ -5,18 +5,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuebusi.thymeleaf.mapper.ProductMapper;
 import com.xuebusi.thymeleaf.model.Product;
 import com.xuebusi.thymeleaf.service.ProductService;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-
-    private final ProductMapper productMapper;
-
-    public ProductServiceImpl(ProductMapper productMapper) {
-        this.productMapper = productMapper;
-    }
+    @Resource
+    private ProductMapper productMapper;
 
     @Override
     public List<Product> getAllProducts() {

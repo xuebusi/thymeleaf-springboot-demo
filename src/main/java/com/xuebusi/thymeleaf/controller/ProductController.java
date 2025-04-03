@@ -6,6 +6,7 @@ import com.xuebusi.thymeleaf.model.NavItem;
 import com.xuebusi.thymeleaf.model.Product;
 import com.xuebusi.thymeleaf.service.ProductService;
 import com.xuebusi.thymeleaf.service.UserService;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,14 +17,11 @@ import java.util.List;
 
 @Controller
 public class ProductController {
+    @Resource
+    private ProductService productService;
 
-    private final ProductService productService;
-    private final UserService userService;
-
-    public ProductController(ProductService productService, UserService userService) {
-        this.productService = productService;
-        this.userService = userService;
-    }
+    @Resource
+    private UserService userService;
 
     @GetMapping("/products")
     public String listProducts(
