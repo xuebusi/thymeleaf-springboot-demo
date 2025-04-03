@@ -1,5 +1,6 @@
 package com.xuebusi.thymeleaf.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuebusi.thymeleaf.dto.NavBarDto;
 import com.xuebusi.thymeleaf.model.NavItem;
 import com.xuebusi.thymeleaf.model.Product;
@@ -9,11 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 public class ProductController {
@@ -27,21 +26,27 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String listProducts(Model model) {
+    public String listProducts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(required = false) String category,
+            Model model) {
+
         // 构建导航栏数据
         NavBarDto navBar = createNavBarData("products");
 
-        // 获取产品列表和分类
-        List<Product> products = productService.getAllProducts();
-        Set<String> categories = products.stream()
-                .map(Product::getCategory)
-                .collect(Collectors.toSet());
+        Page<Product> productPage;
+        if (category != null && !category.isEmpty()) {
+            productPage = productService.getProductsByCategory(category, page, size);
+        } else {
+            productPage = productService.getProductsByPage(page, size);
+        }
 
-        // 添加模型属性
         model.addAttribute("navBar", navBar);
         model.addAttribute("pageTitle", "产品列表");
-        model.addAttribute("products", products);
-        model.addAttribute("categories", categories);
+        model.addAttribute("productPage", productPage); // ✅ 正确传递
+        model.addAttribute("products", productPage.getRecords()); // ✅ 直接传递列表
+        model.addAttribute("categories", productService.getAllCategories());
 
         return "products";
     }
@@ -51,17 +56,13 @@ public class ProductController {
         // 构建导航栏数据
         NavBarDto navBar = createNavBarData("products");
 
-        // 获取产品详情
-        Optional<Product> product = productService.getProductById(id);
-        if (!product.isPresent()) {
-            return "redirect:/products";
+        Product product = productService.getProductById(id);
+        if (product != null) {
+            model.addAttribute("product", product);
+            model.addAttribute("pageTitle", product.getName());
         }
 
-        // 添加模型属性
         model.addAttribute("navBar", navBar);
-        model.addAttribute("pageTitle", product.get().getName());
-        model.addAttribute("product", product.get());
-
         return "product-detail";
     }
 
